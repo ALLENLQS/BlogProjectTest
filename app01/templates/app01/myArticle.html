@@ -1,0 +1,65 @@
+{% extends "app01/base.html" %}
+
+{% block title %}
+    文章列表页
+{% endblock %}
+
+{% block style %}
+    <link href="/static/app01/css/main.css" rel="stylesheet">
+    <link href="/static/app01/css/base.css" rel="stylesheet">
+    <script src="/static/app01/js/jquery.js"></script>
+    <script src="/static/app01/js/vue.min.js"></script>
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="con_content">
+            <div class="about_box" id = "vueData">
+                <h2 class="nh1"><span>您现在的位置是：<a href="/" target="_blank">网站首页
+                </a><a href="#" target="_blank">个人日记</a></span><b>个人日记</b></h2>
+                {% verbatim myblock %}
+                    <div class="dtxw box" id="dataList">
+                        <li v-for = "page in page_data">
+                            <div class="dttext f_l">
+                                <ul>
+                                    <h2><a v-bind:href="['/article/?id='+page.id]">{{ page.title }}</a></h2>
+                                    <p v-html="page.description">{{ page.description }}</p>
+                                    <span>{{ page.time }}</span>
+                                </ul>
+                            </div>
+                            <div class="xwpic f_r"><a href="/"><img v-bind:src="['/static/app01/'+page.picture]"></a></div>
+                        </li>
+                    </div>
+        {% endverbatim myblock%}
+        <div class="pagelist">页次：1/1 每页25 总数10<a href="/">首页</a><a href="/">上一页</a><a href="/">下一页</a><a href="/">尾页</a></div>
+    </div>
+  </div>
+  <div class="blank"></div>
+  <!-- container代码 结束 -->
+    </div>
+    <script>
+        $(
+            function () {
+                $.ajax(
+                     {
+                         url: "/vuePageData/",
+                         type: "GET",
+                         data: "",
+                         dataType: "json", //我们需要抢到我们的ajax请求需求数据是json
+                         success: function (data) {
+                             new Vue( //注意new地下和var
+                                 {
+                                   el:"#dataList", //绑定指定元素，注意选择器，注意#
+                                   data: {
+                                       page_data: data["pageData"]                                   }
+                                  }
+                             );
+                         },
+                         error: function (error) {
+                             console.log(error)
+                         }
+                     }
+                )
+             }
+        );
+    </script>
+{% endblock %}

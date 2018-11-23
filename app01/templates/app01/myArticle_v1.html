@@ -1,0 +1,173 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>文章列表页</title>
+<meta name="keywords" content="文章列表页――江南墨卷" />
+<meta name="description" content="文章列表页――江南墨卷" />
+<link href="/static/app01/css/base.css" rel="stylesheet">
+<link href="/static/app01/css/main.css" rel="stylesheet">
+
+<!--[if lt IE 9]>
+<script src="js/modernizr.js"></script>
+<![endif]-->
+<script type="text/javascript" src="/static/app01/js/jquery.js"></script>
+<script type="text/javascript" src="/static/app01/js/vue.min.js"></script>
+<script type="text/javascript" src="/static/app01/js/vue-resource.js"></script>
+
+</head>
+<body>
+<div id="wrapper">
+<header>
+  <div class="headtop"></div>
+  <div class="contenttop">
+    <div class="logo f_l">ALLEN---个人博客</div>
+    <div class="search f_r">
+      <form action="/e/search/index.php" method="post" name="searchform" id="searchform">
+        <input name="keyboard" id="keyboard" class="input_text" value="请输入关键字" style="color: rgb(153, 153, 153);" onfocus="if(value=='请输入关键字'){this.style.color='#000';value=''}" onblur="if(value==''){this.style.color='#999';value='请输入关键字'}" type="text">
+        <input name="show" value="title" type="hidden">
+        <input name="tempid" value="1" type="hidden">
+        <input name="tbname" value="news" type="hidden">
+        <input name="Submit" class="input_submit" value="搜索" type="submit">
+      </form>
+    </div>
+    <div class="blank"></div>
+    <nav>
+      <div  class="navigation">
+        <ul class="menu">
+          <li><a href="index">网站首页</a></li>
+          <li><a href="aboutMe">关于我</a>
+            <ul>
+              <li><a href="aboutMe">个人简介</a></li>
+              <li><a href="myPicture">个人相册</a></li>
+            </ul>
+          </li>
+          <li><a href="#">我的日记</a>
+            <ul>
+              <li><a href="myArticle_v1">个人日记</a></li>
+              <li><a href="myArticle_v1">学习笔记</a></li>
+            </ul>
+          </li>
+          <li><a href="myArticle_v1">技术文章</a> </li>
+          <li><a href="aboutMe.html">给我留言</a> </li>
+        </ul>
+      </div>
+    </nav>
+    <SCRIPT type=text/javascript>
+   // Navigation Menu
+   $(function() {
+      $(".menu ul").css({display: "none"}); // Opera Fix
+      $(".menu li").hover(function(){
+         $(this).find('ul:first').css({visibility: "visible",display: "none"}).slideDown("normal");
+      },function(){
+         $(this).find('ul:first').css({visibility: "hidden"});
+      });
+   });
+</SCRIPT>
+  </div>
+</header>
+<body>
+<div class="container">
+  <div class="con_content">
+    <div class="about_box" id = "vueData">
+      <h2 class="nh1"><span>您现在的位置是：<a href="/" target="_blank">网站首页</a>>><a href="#" target="_blank">个人日记</a></span><b>个人日记</b></h2>
+        {% verbatim myblock %} <!--vue的格式化标签-->
+            <div class="dtxw box" id="dataList">
+                <li v-for = "page in page_data">
+                      <div class="dttext f_l">
+                            <ul>
+                                <!--注意vue的属性绑定 两个问题
+                                    问题一：要用数组类型
+                                    问题二：要注意v-bind:后面不可以有空格 强迫症尤其小心
+                                -->
+                              <h2><a v-bind:href="['/article/?id='+page.id]">{{ page.title }}</a></h2>
+                              <p v-html="page.description">{{ page.description }}</p>
+                              <span>{{ page.time }}</span>
+                            </ul>
+                      </div>
+                    <div class="xwpic f_r"><a href="/"><img v-bind:src="['/static/app01/'+page.picture]"></a></div>
+                </li>
+          </div>
+            <div class="pagelist">
+
+                <span v-for="p in page_range" >
+                    <a v-on:click="getPage(p)">{{ p }}</a> <!--注意vue的函数绑定和传参-->
+                </span>
+          </div>
+        {% endverbatim myblock %}
+    </div>
+  </div>
+  <div class="blank"></div>
+  <!-- container代码 结束 -->
+
+  <footer>
+    <div class="footer">
+      <div class="f_l">
+            <p>All Rights Reserved 版权所有：<a href="http://www.qq.com">ALLEN个人博客</a> 备案号：蜀ICP备00000001号</p>
+      </div>
+      <div class="f_r textr">
+        <p>Design by DanceSmile</p>
+      </div>
+    </div>
+  </footer>
+</div>
+</body>
+<script>
+    var list = [];
+    Vue.use(VueResource); //首先需要声明一下vue对象变成了vueResource对象
+    new Vue(
+        {
+            el: "#vueData",
+            data: {
+                page_data: "",
+                page_range: []
+            },
+            // created方法在初始化的时候调用的，相当于我们默认的第一页
+            created: function () {
+                var url = "/vuePageData_v1/";
+                this.$http.get(url).then(
+                     function (data) {
+                          this.page_data = data["data"]["pageData"]; //用ajax返回的数据更新到我们绑定好的数据当中
+                          this.page_range = data["data"]["page_range"]; //用ajax返回的数据更新到我们绑定好的数据当中
+                          for(var ds in data["data"]["page_range"]){
+                              list.push(data["data"]["page_range"][ds])
+                          }
+                     },
+                     function (error) {
+                         console.log(error)
+                     }
+                )
+            },
+            methods: {
+                getPage: function (page) {
+                    var url = "/vuePageData_v1/?page="+page;
+                    this.$http.get(url).then(
+                     function (data) {
+                          page_range = data["data"]["page_range"];
+                          this.page_data = data["data"]["pageData"];
+                          for(var ds in data["data"]["page_range"]){
+                              console.log("++++++++++++++++++++++++++++++++++++++++++++");
+                              pageNumber = page_range[ds];
+                              if($.inArray(pageNumber,list) == -1){
+                                  list.push(pageNumber)
+                              }
+                              console.log(pageNumber);
+                              console.log("++++++++++++++++++++++++++++++++++++++++++++");
+
+                          }
+
+                          this.page_range = list;
+                         console.log(data)
+                     },
+                     function (error) {
+                         console.log(error)
+                     }
+                )
+                }
+            }
+        }
+    )
+</script>
+</div>
+</body>
+</html>

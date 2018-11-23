@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="/static/app01/js/jquery.js"></script>
+    <script src="/static/app01/js/vue.min.js"></script>
+</head>
+<body>
+    <h1>
+        这个是vuejs测试页面
+    </h1>
+    <!--vue绑定和Django的jinja2模板系统使用的标签是一样的，为了区分我们需要用verbatim将Vue的标签包围起来-->
+    {% verbatim myblock %}
+        <!--
+        <div id="vueExample">
+            <p>基本的文本绑定</p>
+            <p>hello world I am {{ name }}</p>
+        </div>
+
+        <div id="vueExample">
+            <p>基本的循环绑定</p>
+            <p v-for = 'p in project'>I like{{ p }}</p>
+        </div>
+
+        <div id="vueExample">
+            <p>带有属性和映射的循环绑定</p>
+            <ul>
+                <li v-for = "p in projects">
+                    <span v-bind:id = "p.color">
+                        {{ p.name }}
+                    </span>
+                </li>
+            </ul>
+        </div>
+        -->
+        <div id="vueExample">
+            <p>基本的事件绑定</p>
+            <span v-on:click="alertthing">按我呀!</span>
+        </div>
+    {% endverbatim myblock%}
+    <script>
+        new Vue( //实例化Vue对象
+            {
+                el:"#vueExample",//绑定的元素是一个id为VueExample的div
+                data:{
+                    name:"allen,I am so cool",
+                    project:['python','linux','php'],
+                    projects:[
+                        {name:"python",color:"red"},
+                        {name:"linux",color:"yellow"},
+                        {name:"php",color:"blue"},
+                    ]
+                },//可供绑定的数据设置
+                methods:{
+                    alertthing:function () {
+                        alert("按我干啥？")
+                    }
+                }
+            }
+        )
+    </script>
+</body>
+</html>
