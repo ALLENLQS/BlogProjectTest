@@ -38,8 +38,8 @@ class Picture(models.Model):
     image = models.ImageField(verbose_name="图片链接",upload_to="images/picture")
     description = RichTextUploadingField(verbose_name="图片描述")
 
-    classify = models.ForeignKey(to=Classify,verbose_name="图片分类")
-    comment = models.ForeignKey(to=Comment, verbose_name="图片评论")
+    classify = models.ForeignKey(to=Classify,verbose_name="图片分类",on_delete=models.CASCADE)
+    comment = models.ForeignKey(to=Comment, verbose_name="图片评论",on_delete=models.CASCADE)
 
     def __str__(self):
         return "图片名称：%s"%self.label
@@ -61,9 +61,9 @@ class Article(models.Model):
 
     picture = models.ImageField(verbose_name="文章图片",upload_to="images/picture")
 
-    author = models.ForeignKey(Author)
+    author = models.ForeignKey(Author,on_delete=models.CASCADE)
     classify = models.ManyToManyField(to=Classify,verbose_name="文章分类")
-    comment = models.ForeignKey(to=Comment,verbose_name="文章评论",blank=True,null=True)
+    comment = models.ForeignKey(to=Comment,verbose_name="文章评论",blank=True,null=True,on_delete=models.CASCADE)
 
     objects = ArticleManager()
     def __str__(self):

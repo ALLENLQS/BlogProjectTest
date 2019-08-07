@@ -59,14 +59,14 @@ class Migration(migrations.Migration):
                 ('label', models.CharField(verbose_name='图片名称', max_length=32)),
                 ('image', models.ImageField(verbose_name='图片链接', upload_to='images/picture')),
                 ('description', ckeditor_uploader.fields.RichTextUploadingField(verbose_name='图片描述')),
-                ('classify', models.ForeignKey(to='app01.Classify', verbose_name='图片分类')),
-                ('comment', models.ForeignKey(to='app01.Comment', verbose_name='图片评论')),
+                ('classify', models.ForeignKey(to='app01.Classify', verbose_name='图片分类',on_delete=models.CASCADE)),
+                ('comment', models.ForeignKey(to='app01.Comment', verbose_name='图片评论',on_delete=models.CASCADE)),
             ],
         ),
         migrations.AddField(
             model_name='article',
             name='author',
-            field=models.ForeignKey(to='app01.Author'),
+            field=models.ForeignKey(to='app01.Author',on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='article',
@@ -76,6 +76,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='article',
             name='comment',
-            field=models.ForeignKey(to='app01.Comment', blank=True, verbose_name='文章评论', null=True),
+            field=models.ForeignKey(to='app01.Comment', blank=True, verbose_name='文章评论', null=True,on_delete=models.CASCADE),
         ),
     ]
